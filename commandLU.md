@@ -757,5 +757,10 @@ Sticky bit нужен для запрета удаления файлов все
 
     sudo crontab -u username
 
+## Семинар 4
+
+Создание нового репозитория
+
+    apt -add -repository
 
 
