@@ -893,3 +893,19 @@ policy drop
 
     iptables -P INPUT DROP
 
+### Перенаправление портов
+
+● Редирект с 80 на 8080 порт (TCP):
+○ iptables -t nat -I PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+● Проверка:
+○ iptables -L -nv -t nat
+
+### Сохранение конфигурации iptables
+
+● Сохранение и восстановление из файла
+○ iptables-save > iptables.rules
+○ iptables-restore < iptables.rules
+● Сервис netfilter-persistent
+○ apt install iptables-persistent netfilter-persistent
+○ netfilter-persistent save
+○ Конфигурация в /etc/iptables
