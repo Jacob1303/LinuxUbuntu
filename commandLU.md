@@ -239,6 +239,7 @@ __*Nano*__
 
 К сведению: 
 
+
 - запуск через команду __nano__;
 - символ ^ обозначает Ctrl;
 - буква М обозначает Alt.
@@ -763,4 +764,132 @@ Sticky bit нужен для запрета удаления файлов все
 
     apt -add -repository
 
+## Лекция 4. Сетевые возможности linux
+
+Сетевый интерфейсы и команда ip
+
+Список всех интерфейсов
+
+    ip a
+
+Показ статистики
+
+    ip -s a
+
+Включение подсветки
+
+    ip -c -s a
+
+Данные по одному интерфейсу
+
+    ip a show [название интерфейса]
+
+Данные уровня L2(link)
+
+    ip link show [название интерфейса]
+
+Просмотр информации о маршрутах
+
+    ip r
+
+### Сокеты и порты
+
+Socket stat
+
+    ss
+
+TCP-сокет в состоянии LISTEN
+
+    ss -ntlp
+
+TCP и UDP-сокеты в состоянии LISTEN
+
+    ss -ntulp
+
+Все TCP и UDP-сокеты
+
+    ss -tulpan
+
+Повторить предыдущую команду с правами судо
+
+    sudo !!
+
+### Netplan
+
+Конфигурационные файлы
+
+    /etc/netplan/*.yaml
+
+Тестирование и применение конфигурации
+
+    netplan try
+
+Применение конфигурации
+
+    netplan apply 
+
+### Диагностика сети
+
+● ping 8.8.8.8 – доступность хоста (ICMP протокол)
+
+● ping ya.ru – проверка DNS и доступности
+
+● host -t a yandex.ru – проверка DNS
+
+● host -t a yandex.ru 8.8.8.8 – другой DNS-сервер
+
+● dig @8.8.8.8 google.com – подробная информация по DNS
+
+● tracepath ya.ru – просмотр маршрута прохождения пакетов
+
+● traceroute ya.ru – альтернатива
+
+● mtr ya.ru – постоянный мониторинг доступности хостов
+
+### Правила фильтрации
+
+● Просмотр таблицы
+    ○ iptables -L -nv
+    ○ iptables -L -nv -t nat
+
+● Политика по умолчанию
+    ○ iptables -P INPUT DROP
+
+● Добавление правил
+    ○ iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+    ○ iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+    ○ iptables -A INPUT -p tcp -s 192.168.0.100 --dport 80 -j DROP
+
+● Удаление правил
+    ○ iptables -D INPUT 3
+    ○ iptables -D INPUT -p tcp --dport 80 -j ACCEPT
+
+● Сброс правил
+    ○ iptables -F
+
+### Пример конфигурации сервера
+
+SSH allow
+
+    iptables -A INPUT -p tcp --dport=22 -j ACCEPT
+
+HTTP, HTTPS allow
+
+    iptables -A INPUT -p tcp -m multiport --dport 80,443 -j ACCEPT
+
+loopback allow
+
+    iptables -A INPUT -i lo -j ACCEPT
+
+ICMP
+
+    iptables -A INPUT -p icmp -j ACCEPT
+
+established connections allow
+
+    iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+policy drop
+
+    iptables -P INPUT DROP
 
